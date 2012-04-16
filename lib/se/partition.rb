@@ -1,3 +1,5 @@
+require_relative 'partition/postgresql'
+
 module SE
   module Partition
 
