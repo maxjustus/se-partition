@@ -122,6 +122,8 @@ module SE
 
         create_insertion_trigger
 
+        create_after_insert_function
+
       end
 
       def partition_by_string
@@ -305,10 +307,26 @@ module SE
                 s := $$ INSERT INTO $$ || partition_table ||
                      $$ SELECT ($$ || quote_literal( s ) || $$::$$ || '#{table_name}' || $$).*  $$;
                 EXECUTE s;
-                RETURN NULL;
+                RETURN NEW;
               END;
             $BODY$
           LANGUAGE plpgsql;
+        })
+      end
+
+      def create_after_insert_function
+        exec(%Q{
+          CREATE OR REPLACE FUNCTION #{table_name}_partition_after_insert_function()
+            RETURNS trigger AS
+          $BODY$
+          DECLARE
+            r #{table_name}%rowtype;
+          BEGIN
+            DELETE FROM ONLY #{table_name} WHERE id = NEW.id returning * into r; -- delete row from parent table.
+            RETURN r;
+          END;
+          $BODY$
+          LANGUAGE plpgsql VOLATILE;
         })
       end
 
@@ -317,6 +335,14 @@ module SE
           CREATE TRIGGER #{table_name}_partition_insert_trigger
             BEFORE INSERT ON #{table_name}
             FOR EACH ROW EXECUTE PROCEDURE #{table_name}_partition_insert_function();
+        })
+      end
+
+      def create_after_insertion_trigger
+        exec(%Q{
+          CREATE TRIGGER #{table_name}_partition_after_insert_trigger
+            AFTER INSERT ON #{table_name}
+            FOR EACH ROW EXECUTE PROCEDURE #{table_name}_partition_after_insert_function();
         })
       end
 

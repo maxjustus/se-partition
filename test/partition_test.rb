@@ -2,13 +2,6 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
-class ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
-  # partition triggers can't return values. :(
-  def supports_insert_with_returning?
-    false
-  end
-end
-
 # lifed from db:test:prepare task
 config = ActiveRecord::Base.configurations[RAILS_ENV]
 ActiveRecord::Base.establish_connection(config.merge('database' => 'postgres', 'schema_search_path' => 'public'))
