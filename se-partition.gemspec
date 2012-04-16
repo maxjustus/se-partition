@@ -11,7 +11,8 @@ Gem::Specification.new do |s|
   s.has_rdoc          = false
 
   s.files             = []
-  s.files            += Dir.glob("lib/**/*")
+  s.files            += Dir.glob("lib/se/*")
+  s.files            += Dir.glob("lib/se/partition/*")
   s.files            += Dir.glob("test/**/*")
 
   s.description       = <<desc

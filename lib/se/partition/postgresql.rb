@@ -21,9 +21,12 @@ module SE
         ensure_language
 
         case field_type
-          when :datetime  : partition_by_date
-          when :string    : partition_by_string
-          else raise "Unable to partition based on #{model}.#{field} of type #{field_type}"
+          when :datetime
+            partition_by_date
+          when :string
+            partition_by_string
+          else
+            raise "Unable to partition based on #{model}.#{field} of type #{field_type}"
         end
       end
 
@@ -52,9 +55,12 @@ module SE
         self.sql_partition_type = 'date'
 
         template = case interval
-          when 'year'  then '_YYYY'
-          when 'month' then '_YYYYMM'
-          else '_YYYYMMDD'
+          when 'year'
+            '_YYYY'
+          when 'month'
+            '_YYYYMM'
+          else
+            '_YYYYMMDD'
         end
 
         exec(%Q{
