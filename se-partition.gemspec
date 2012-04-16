@@ -10,10 +10,8 @@ Gem::Specification.new do |s|
   s.authors           = [ "Max Spransy" ]
   s.has_rdoc          = false
 
-  s.files             = %w( README.md )
+  s.files             = []
   s.files            += Dir.glob("lib/**/*")
-  s.files            += Dir.glob("bin/**/*")
-  s.files            += Dir.glob("man/**/*")
   s.files            += Dir.glob("test/**/*")
 
   s.description       = <<desc
