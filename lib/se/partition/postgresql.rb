@@ -130,6 +130,8 @@ module SE
 
         create_after_insert_function
 
+        create_after_insertion_trigger
+
       end
 
       def partition_by_string
