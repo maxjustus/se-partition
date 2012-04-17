@@ -311,10 +311,7 @@ module SE
                   raise exception 'partitioning column "#{field}" cannot be NULL';
                 end if;
                 partition_table := partition_for_#{table_name}(new.#{field}::#{sql_partition_type});
-                select new into s;
-                s := $$ INSERT INTO $$ || partition_table ||
-                     $$ SELECT ($$ || quote_literal( s ) || $$::$$ || '#{table_name}' || $$).*  $$;
-                EXECUTE s;
+                EXECUTE 'INSERT INTO ' || quote_ident(partition_table) || ' SELECT ($1).*' using NEW;
                 RETURN NEW;
               END;
             $BODY$
