@@ -37,6 +37,11 @@ class StringModel < ActiveRecord::Base ; end
 
 
 describe SE::Partition do
+  before do
+    StringModel.destroy_all
+    DateModel.destroy_all
+  end
+
   before(:all) do
     CreateModels.new.up
   end
@@ -87,5 +92,11 @@ describe SE::Partition do
     StringModel.connection.tables.select {|ii| /string_models_/ =~ ii}.each do |table|
       StringModel.connection.indexes(table).size.should be 2
     end
+  end
+
+  it 'supports insert with returning' do
+    SE::Partition.partition(StringModel, :key, :verbose => false)
+    m = StringModel.create(:key => '7day-2010-01-01')
+    m.id.should_not be nil
   end
 end
