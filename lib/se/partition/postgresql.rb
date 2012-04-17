@@ -105,17 +105,6 @@ module SE
                   #{add_permissions}
 
                   #{copy_indexes}
-
-                  -- now we create a rule, that will be assigned to the original table
-                  s := $$
-                    CREATE RULE $$ || quoted_rule_name || $$ AS
-                    ON INSERT TO $$ || base_table_name || $$
-                      WHERE ( $$ || quoted_column_name || $$ >= DATE $$ || quote_literal( partition_beginning_date ) || $$ AND
-                              $$ || quoted_column_name || $$ < DATE $$ || quote_literal( next_partition_beginning_date ) || $$ )
-                    DO INSTEAD
-                      INSERT INTO $$ || quoted_needed_table_name || $$ VALUES (NEW.*); $$;
-                  -- raise notice 'creating a rule as [%]', s;
-                  EXECUTE s;
                 END;
               end if;
               return needed_partition_table_name;
