@@ -176,16 +176,6 @@ module SE
                   #{add_permissions}
 
                   #{copy_indexes}
-
-                  -- now we create a rule, that will be assigned to the original table
-                  s := $$
-                    CREATE RULE $$ || quoted_rule_name || $$ AS
-                    ON INSERT TO $$ || base_table_name || $$
-                      WHERE ( lower($$ || quoted_column_name || $$) = TEXT $$ || quote_literal( partition_string ) || $$ )
-                    DO INSTEAD
-                      INSERT INTO $$ || quoted_needed_table_name || $$ VALUES (NEW.*); $$;
-                  -- raise notice 'creating a rule as [%]', s;
-                  EXECUTE s;
                 END;
               end if;
               return needed_partition_table_name;
@@ -197,6 +187,10 @@ module SE
         create_partition_insert_function
 
         create_insertion_trigger
+
+        create_after_insert_function
+
+        create_after_insertion_trigger
 
       end
 
