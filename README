@@ -35,11 +35,3 @@ The postgres code was heavily borrowed from: http://valgogtech.blogspot.com/2008
 In order for postgres partitioning to work most effectively, you need to make sure you have 
 constraint_exclusion set to 'on' or 'partition' in your postgresql.conf
 
-You'll also need to add the following monkey-patch:
-
-  class ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
-    # partition triggers can't return values. :(
-    def supports_insert_with_returning?
-      false
-    end
-  end
