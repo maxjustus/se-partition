@@ -37,7 +37,7 @@ module SE
       def prune(keep_count)
         partitions = model.connection.tables.select {|ii| ii =~ /^#{table_name}_\d{4,8}$/}.sort
         partitions[0 .. -(keep_count + 1)].each do |ii|
-          puts "Dropping: #{ii}" unless Rails.env.test?
+          puts "Dropping: #{ii}" unless ENV['RAILS_ENV'] = 'test'
           exec("DROP TABLE #{model.connection.quote_table_name(ii)} CASCADE")
         end
         [0, partitions.size - keep_count].max
