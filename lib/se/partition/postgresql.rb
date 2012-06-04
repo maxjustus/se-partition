@@ -23,6 +23,8 @@ module SE
         case field_type
           when :datetime
             partition_by_date
+          when :date
+            partition_by_date
           when :string
             partition_by_string
           else
